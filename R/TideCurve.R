@@ -265,7 +265,8 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
   prediction_date <- NULL
   prediction_time <- NULL
   date_time       <- NULL
-  tidal.curve     <- data.table(date_time = chron(dates. = (tsyntstd + 1 / 864000)), time1 = as.numeric(tsyntstd) + 1 / 864000, height = ty)
+  tidal.curve     <- data.table(date_time = chron(dates. = (tsyntstd + 1 / 864000)),
+                                time1 = as.numeric(tsyntstd) + 1 / 864000, height = ty)
 
   tidal.curve[, c("prediction_date", "prediction_time") :=
                 tstrsplit(format(chron(dates. = (tsyntstd+1/864000)), "%Y/%m/%d %H:%M:%S"), split = " ")]
@@ -273,7 +274,7 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
   time.height[, prediction_date := strftime(dates(date_time), format = "%Y/%m/%d")]
   time.height[, prediction_time := format(chron(dates. = (round(as.numeric(date_time) * 86400, digits = 0) / 86400) + 1 / 864000), "%H:%M:%OS")]
 
-  #we return a list called report containing the tide curve (lunar and solar), diff.analyse, i.analyse and lm.coeff and data matrix
+  #we return a list called report containing the tide curve (lunar and solar), diff.analyse, lm.coeff and data matrix
   report                 <- list()
   report$data.matrix     <- data.matrix[(numm >= numma) & (numm <= numme)]
   report$synthesis.lunar <- time.height
