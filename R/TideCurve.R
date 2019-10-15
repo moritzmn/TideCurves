@@ -180,6 +180,7 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
 
   design.frame     <- data.matrix[(numm >= numma) & (numm <= numme)]
   design.frame     <- xdesign.matrix[design.frame]
+  setkey(design.frame, "imm")
 
   fitting.coef <- design.frame[,{
     m.h   <- mean(height)
