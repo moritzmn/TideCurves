@@ -51,12 +51,12 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
 
   height  <- dataInput$height
   nspline <- 7
-
+  options(chron.origin = c(month = 1, day = 1, year = 1900))
   chron.origin <- chron(dates. = "1900/01/01",
                         times. = "00:00:00",
                         format = c(dates = "y/m/d", times = "h:m:s"),
                         out.format = c(dates = "y/m/d", times = "h:m:s"))
-  options(chron.origin = c(month = 1, day = 1, year = 1900))
+
   tperiode.m2  <- 360 / 28.9841042373
   tmean.moon   <- tperiode.m2 * 2
   tm24         <- tmean.moon / 24
@@ -265,13 +265,13 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
   prediction_date <- NULL
   prediction_time <- NULL
   date_time       <- NULL
-  tidal.curve     <- data.table(date_time = chron(dates. = (tsyntstd + 1 / 864000)),
-                                time1 = as.numeric(tsyntstd) + 1 / 864000, height = ty)
-
-  tidal.curve[, c("prediction_date", "prediction_time") :=
-                tstrsplit(format(chron(dates. = (tsyntstd+1/864000)), "%Y/%m/%d %H:%M:%S"), split = " ")]
+  tidal.curve     <- data.table(date_time = format(chron(dates. = (tsyntstd + 1 / 864000)), "%Y/%m/%d %H:%M:%S"),
+                                time1  = as.numeric(tsyntstd) + 1 / 864000,
+                                height = ty)
+  tidal.curve[, c("prediction_date", "prediction_time") := tstrsplit(date_time, split = " ")]
   tidal.curve <- tidal.curve[(prediction_date != "1900/01/01" & height != 0)]
-  time.height[, prediction_date := strftime(dates(date_time), format = "%Y/%m/%d")]
+
+  time.height[, prediction_date := format(date_time, "%Y/%m/%d")]
   time.height[, prediction_time := format(chron(dates. = (round(as.numeric(date_time) * 86400, digits = 0) / 86400) + 1 / 864000), "%H:%M:%OS")]
 
   #we return a list called report containing the tide curve (lunar and solar), diff.analyse, lm.coeff and data matrix
