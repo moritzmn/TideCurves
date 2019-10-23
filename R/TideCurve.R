@@ -74,7 +74,7 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
   otz.24       <- otz / 24
   tmondkm      <- numeric(length = km)
 
-  for (i in 1:km) {
+  for (i in 1 : km) {
     tmondkm[i] <- tmmh * (i - 0.5)
   }
 
@@ -129,7 +129,7 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
   xdesign.matrix <- matrix(0.0, nrow=(max_numm - min_numm + 1), ncol = matrix.cols + 1)
   xdesign.matrix[, 1] <- seq.int(min_numm, max_numm, 1)
 
-  for(i in 1:nrow(xdesign.matrix)){
+  for(i in 1 : nrow(xdesign.matrix)){
     xdesign.matrix[i, 2: (matrix.cols + 1)] <- Funcs(xi = xdesign.matrix[i, 1], tdiff = tdiff.analyse)[[3]]
   }
 
@@ -223,8 +223,11 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
     }
   }
   time.height <- data.table(time.height)
-  time.height[,date_time := chron(dates. = time1)]
-  setcolorder(time.height, c("date_time", "height", "i", "k", "time1"))
+  # time.height[,date_time := chron(dates. = time1)]
+  time.height[,date_time := format(chron(dates. = (round(as.numeric(date_time) * 86400, digits = 0) / 86400) + 1 / 864000),
+                                   "%Y/%m/%d %H:%M:%0S")]
+  setcolorder(time.height, c("date_time", "time1", "height", "i", "k"))
+  time.height[, c("prediction_date", "prediction_time") := tstrsplit(date_time, split = " ")]
 
   #Solar synthesis
   l           <- 1L
@@ -272,8 +275,8 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
   tidal.curve[, c("prediction_date", "prediction_time") := tstrsplit(date_time, split = " ")]
   tidal.curve <- tidal.curve[(prediction_date != "1900/01/01" & height != 0)]
 
-  time.height[, prediction_date := format(date_time, "%Y/%m/%d")]
-  time.height[, prediction_time := format(chron(dates. = (round(as.numeric(date_time) * 86400, digits = 0) / 86400) + 1 / 864000), "%H:%M:%OS")]
+  # time.height[, prediction_date := format(date_time, "%Y/%m/%d")]
+  # time.height[, prediction_time := format(chron(dates. = (round(as.numeric(date_time) * 86400, digits = 0) / 86400) + 1 / 864000), "%H:%M:%OS")]
 
   #we return a list called report containing the tide curve (lunar and solar), diff.analyse, lm.coeff and data matrix
   report                 <- list()
