@@ -25,8 +25,9 @@
 #' \item{lm.coeff}{Coefficients for the km fitted linear models used in the synthesis}
 #' \item{diff.analyse}{Time in days spanning the analysis}
 #' @references  Godin, Gabriel (1972) The Analysis of Tides. Toronto, 264pp
+#' @references \url{https://www.ocean-sci.net/15/1363/2019/}
 #' @references \url{http://tidesandcurrents.noaa.gov/publications/glossary2.pdf}
-#' @references \url{http://www.bsh.de/de/Produkte/Buecher/Berichte_/Bericht50/BSH-Bericht50.pdf}
+#' @references \url{https://www.bsh.de/DE/PUBLIKATIONEN/_Anlagen/Downloads/Meer_und_Umwelt/Berichte-des-BSH/Berichte-des-BSH-50_de.pdf}
 #' @examples
 #' TideCurve(dataInput = tideObservation, asdate = "2015/12/06",
 #'              astime = "00:00:00",      aedate = "2015/12/31",
@@ -224,8 +225,8 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
   }
   time.height <- data.table(time.height)
   # time.height[,date_time := chron(dates. = time1)]
-  time.height[,date_time := format(chron(dates. = (round(as.numeric(date_time) * 86400, digits = 0) / 86400) + 1 / 864000),
-                                   "%Y/%m/%d %H:%M:%0S")]
+  time.height[,date_time := format(chron(dates. = (round(time1 * 86400, digits = 0) / 86400) + 1 / 864000),
+                                   "%Y/%m/%d %H:%M:%S")]
   setcolorder(time.height, c("date_time", "time1", "height", "i", "k"))
   time.height[, c("prediction_date", "prediction_time") := tstrsplit(date_time, split = " ")]
 
