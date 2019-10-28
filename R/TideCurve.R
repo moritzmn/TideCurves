@@ -224,7 +224,6 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
     }
   }
   time.height <- data.table(time.height)
-  # time.height[,date_time := chron(dates. = time1)]
   time.height[,date_time := format(chron(dates. = (round(time1 * 86400, digits = 0) / 86400) + 1 / 864000),
                                    "%Y/%m/%d %H:%M:%S")]
   setcolorder(time.height, c("date_time", "time1", "height", "i", "k"))
@@ -266,7 +265,7 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
     l           <- l + 1L
   }
 
-  #Add date/time columns to synthesis
+  #Add date/time columns to solar synthesis
   prediction_date <- NULL
   prediction_time <- NULL
   date_time       <- NULL
@@ -275,9 +274,6 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
                                 height = ty)
   tidal.curve[, c("prediction_date", "prediction_time") := tstrsplit(date_time, split = " ")]
   tidal.curve <- tidal.curve[(prediction_date != "1900/01/01" & height != 0)]
-
-  # time.height[, prediction_date := format(date_time, "%Y/%m/%d")]
-  # time.height[, prediction_time := format(chron(dates. = (round(as.numeric(date_time) * 86400, digits = 0) / 86400) + 1 / 864000), "%H:%M:%OS")]
 
   #we return a list called report containing the tide curve (lunar and solar), diff.analyse, lm.coeff and data matrix
   report                 <- list()
