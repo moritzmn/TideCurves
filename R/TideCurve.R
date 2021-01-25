@@ -22,12 +22,12 @@
 #' \item{synthesis.lunar}{The lunar synthesis data as a data.table object in UTC}
 #' \item{data.matrix}{The data needed for analysis}
 #' \item{tide.curve}{The solar tide curve as a data.table object (provided time zone)}
-#' \item{lm.coeff}{Coefficients for the km fitted linear models used in the synthesis}
+#' \item{lm.coeff}{Coefficients for the km fitted linear models used in the synthesis as a list of 1-row matrices}
 #' \item{diff.analyse}{Time in days spanning the analysis}
 #' @references  Godin, Gabriel (1972) The Analysis of Tides. Toronto, 264pp
 #' @references \url{https://www.ocean-sci.net/15/1363/2019/}
 #' @references \url{http://tidesandcurrents.noaa.gov/publications/glossary2.pdf}
-#' @references \url{https://www.bsh.de/DE/PUBLIKATIONEN/_Anlagen/Downloads/Meer_und_Umwelt/Berichte-des-BSH/Berichte-des-BSH-50_de.pdf}
+#' @references \url{https://www.bsh.de/DE/PUBLIKATIONEN/_Anlagen/Downloads/Meer_und_Umwelt/Berichte-des-BSH/Berichte-des-BSH_50_de.pdf?__blob=publicationFile&v=13}
 #' @examples
 #' TideCurve(dataInput = tideObservation, asdate = "2015/12/06",
 #'              astime = "00:00:00",      aedate = "2015/12/31",
@@ -192,6 +192,8 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
   }
   , by = "imm"]
 
+  for(j in seq_len(ncol(fitting.coef))) set(fitting.coef,which(is.na(fitting.coef[[j]])),j,0)
+
   fitting.coef <- lapply(split(fitting.coef, by = "imm", keep.by = FALSE), as.matrix)
 
   m.length              <- (nummse - nummsa + 1) * km
@@ -223,6 +225,11 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
       time.height[m, ] <- c(height[m], ii, k, time1[m])
     }
   }
+
+  prediction_date <- NULL
+  prediction_time <- NULL
+  date_time       <- NULL
+
   time.height <- data.table(time.height)
   time.height[,date_time := format(chron(dates. = (round(time1 * 86400, digits = 0) / 86400) + 1 / 864000),
                                    "%Y/%m/%d %H:%M:%S")]
@@ -266,10 +273,8 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
   }
 
   #Add date/time columns to solar synthesis
-  prediction_date <- NULL
-  prediction_time <- NULL
-  date_time       <- NULL
-  tidal.curve     <- data.table(date_time = format(chron(dates. = (tsyntstd + 1 / 864000)), "%Y/%m/%d %H:%M:%S"),
+
+  tidal.curve     <- data.table(date_time = format(chron(dates. = (tsyntstd + 1 / 864000)), "%Y/%m/%d %H:%M:00"),
                                 time1  = as.numeric(tsyntstd) + 1 / 864000,
                                 height = ty)
   tidal.curve[, c("prediction_date", "prediction_time") := tstrsplit(date_time, split = " ")]
