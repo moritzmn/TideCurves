@@ -50,7 +50,7 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
     km <- round(1440 / mindt)
   }
 
-  height  <- dataInput$height
+  height  <- dataInput[["height"]]
   nspline <- 7
   options(chron.origin = c(month = 1, day = 1, year = 1900))
   chron.origin <- chron(dates. = "1900/01/01",
@@ -79,8 +79,8 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
     tmondkm[i] <- tmmh * (i - 0.5)
   }
 
-  chron.beob      <- chron(dates. = dataInput$observation_date,
-                           times. = dataInput$observation_time,
+  chron.beob      <- chron(dates. = dataInput[["observation_date"]],
+                           times. = dataInput[["observation_time"]],
                            format = c(dates = "y/m/d", times = "h:m:s"),
                            out.format = c(dates = "y/m/d", times = "h:m:s"))
 
@@ -127,7 +127,7 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
   max_numm <- max(c(numme, nummse))
   matrix.cols      <- length(Funcs(tdiff = tdiff.analyse, xi = max_numm)[[3]])
 
-  xdesign.matrix <- matrix(0.0, nrow=(max_numm - min_numm + 1), ncol = matrix.cols + 1)
+  xdesign.matrix      <- matrix(0.0, nrow=(max_numm - min_numm + 1), ncol = matrix.cols + 1)
   xdesign.matrix[, 1] <- seq.int(min_numm, max_numm, 1)
 
   for(i in 1 : nrow(xdesign.matrix)){
@@ -280,13 +280,17 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
   tidal.curve[, c("prediction_date", "prediction_time") := tstrsplit(date_time, split = " ")]
   tidal.curve <- tidal.curve[(prediction_date != "1900/01/01" & height != 0)]
 
-  #we return a list called report containing the tide curve (lunar and solar), diff.analyse, lm.coeff and data matrix
-  report                 <- list()
-  report$data.matrix     <- data.matrix[(numm >= numma) & (numm <= numme)]
-  report$synthesis.lunar <- time.height
-  report$tide.curve      <- tidal.curve
-  report$lm.coeff        <- fitting.coef
-  report$diff.analyse    <- tdiff.analyse
+  #we return a list containing the tide curve (lunar and solar), diff.analyse, lm.coeff and data matrix
+  report                 <- list("data.matrix"     = data.matrix[(numm >= numma) & (numm <= numme)],
+                                 "synthesis.lunar" = time.height,
+                                 "tide.curve"      = tidal.curve,
+                                 "lm.coeff"        = fitting.coeff,
+                                 "diff.analyse"    = tdiff.analyse)
+  # report$data.matrix     <- data.matrix[(numm >= numma) & (numm <= numme)]
+  # report$synthesis.lunar <- time.height
+  # report$tide.curve      <- tidal.curve
+  # report$lm.coeff        <- fitting.coef
+  # report$diff.analyse    <- tdiff.analyse
   return(report)
 }
 
