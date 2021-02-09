@@ -77,14 +77,16 @@ BuildTC <- function(dataInput = NULL, otz = 1, astime, asdate, aedate, aetime, k
   #Computing Funcs for all cases
   min_numm <- min(c(numma, nummsa))
   max_numm <- max(c(numme, nummse))
-  matrix.cols      <- length(Funcs(tdiff = tdiff.analyse, xi = max_numm)[[3]])
+  # matrix.cols      <- length(Funcs(tdiff = tdiff.analyse, xi = max_numm)[[3]])
+  #
+  # xdesign.matrix      <- matrix(0.0, nrow = (max_numm - min_numm + 1), ncol = matrix.cols + 1)
+  # xdesign.matrix[, 1] <- seq.int(min_numm, max_numm, 1)
+  #
+  # for(i in 1 : nrow(xdesign.matrix)){
+  #   xdesign.matrix[i, 2: (matrix.cols + 1)] <- Funcs(xi = xdesign.matrix[i, 1], tdiff = tdiff.analyse)[[3]]
+  # }
 
-  xdesign.matrix      <- matrix(0.0, nrow = (max_numm - min_numm + 1), ncol = matrix.cols + 1)
-  xdesign.matrix[, 1] <- seq.int(min_numm, max_numm, 1)
-
-  for(i in 1 : nrow(xdesign.matrix)){
-    xdesign.matrix[i, 2: (matrix.cols + 1)] <- Funcs(xi = xdesign.matrix[i, 1], tdiff = tdiff.analyse)[[3]]
-  }
+  xdesign.matrix <- BuildDesign(tdiffa = tdiff.analyse, numma = numma, numme = numme)
 
   xa                    <- numeric(length = 7)
   ya                    <- numeric(length = 7)
@@ -148,6 +150,7 @@ BuildTC <- function(dataInput = NULL, otz = 1, astime, asdate, aedate, aetime, k
 
   fitting.coef <- lapply(split(fitting.coef, by = "imm", keep.by = FALSE), as.matrix)
 
-
+  report                 <- list("lm.coeff"        = fitting.coef,
+                                 "diff.analyse"    = tdiff.analyse)
 
 }
