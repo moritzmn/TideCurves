@@ -1,12 +1,26 @@
 #' Builds a TideCurve model
 #'
-#' @description Builds a TideCurve model of class "tidecurve"
+#' @description Builds a TideCurve model of class "tidecurve".
+#' @param dataInput A data frame with the columns observation_date, observation_time and height. See attached data for correct formats.
+#' @param otz The time zone of the observations
+#' @param km The number of nodes between two consecutive mean moon transits. Shall be less or equal to: round(1440 [min] / time step [min])
+#' Example: Time step 5 min: Use km = 288 or even smaller. Leave on default (km = -1) and supply mindt, when unsure.
+#' @param mindt Observation time step in [min]. Default is 30.
+#' @param asdate A string indication the date you want the analysis to start with. Format: "yyyy/mm/dd".
+#' @param astime A string indicating the time you want the analysis to start with. Format: "hh:mm:ss"
+#' @param aedate A string indication the date you want the analysis to end with. Format: "yyyy/mm/dd".
+#' @param aetime A string indicating the time you want the analysis to end with. Format: "hh:mm:ss"
 #' @references \url{https://www.bsh.de/DE/PUBLIKATIONEN/_Anlagen/Downloads/Meer_und_Umwelt/Berichte-des-BSH/Berichte-des-BSH_50_de.pdf?__blob=publicationFile&v=13/}
 #' @references \url {https://doi.org/10.5194/os-15-1363-2019}
 #' @return
 #' @export
 #'
 #' @examples
+#'
+#' BuildTC(dataInput = tideObservation, asdate = "2015/12/06",
+#'              astime = "00:00:00", aedate = "2015/12/31",
+#'              aetime = "23:30:00")
+#'
 BuildTC <- function(dataInput = NULL, otz = 1, astime, asdate, aedate, aetime, km = -1, mindt = 30){
 
   #constants
@@ -71,12 +85,12 @@ BuildTC <- function(dataInput = NULL, otz = 1, astime, asdate, aedate, aetime, k
 
   tdiff.analyse    <- numme - numma + 1
 
-  nummsa  <- as.numeric(floor((ssdate.time - tplus) / tm24))
-  nummse  <- as.numeric(floor((sedate.time - tplus) / tm24))
-
-  #Computing Funcs for all cases
-  min_numm <- min(c(numma, nummsa))
-  max_numm <- max(c(numme, nummse))
+  # nummsa  <- as.numeric(floor((ssdate.time - tplus) / tm24))
+  # nummse  <- as.numeric(floor((sedate.time - tplus) / tm24))
+  #
+  # #Computing Funcs for all cases
+  # min_numm <- min(c(numma, nummsa))
+  # max_numm <- max(c(numme, nummse))
   # matrix.cols      <- length(Funcs(tdiff = tdiff.analyse, xi = max_numm)[[3]])
   #
   # xdesign.matrix      <- matrix(0.0, nrow = (max_numm - min_numm + 1), ncol = matrix.cols + 1)
@@ -91,8 +105,8 @@ BuildTC <- function(dataInput = NULL, otz = 1, astime, asdate, aedate, aetime, k
   xa                    <- numeric(length = 7)
   ya                    <- numeric(length = 7)
   ty                    <- numeric()
-  data.matrix           <- matrix(0.0, nrow = length.diffdays, ncol = 4)
-  colnames(data.matrix) <- c("numm", "imm", "tmmttmond", "height")
+  data_matrix           <- matrix(0.0, nrow = length.diffdays, ncol = 4)
+  colnames(data_matrix) <- c("numm", "imm", "tmmttmond", "height")
   numm                  <- NULL
   floored               <- floor((diff.days - tplus) / tm24)
   tdtobs.2              <- tdtobs / 2
@@ -125,15 +139,15 @@ BuildTC <- function(dataInput = NULL, otz = 1, astime, asdate, aedate, aetime, k
 
     ty                 <- splint(xa, ya, tmmttmond)
 
-    data.matrix[ii, ]  <- c(ik, imm, tmmttmond, ty)
+    data_matrix[ii, ]  <- c(ik, imm, tmmttmond, ty)
   }
 
   #Prepare joins on numm for xdesign and design.frame
   colnames(xdesign.matrix) <- c("numm", paste0("V","", seq(1 : matrix.cols)))
   xdesign.matrix           <- data.table(xdesign.matrix, key = "numm")
-  data.matrix              <- data.table(data.matrix, key = "numm")
+  data_matrix              <- data.table(data_matrix, key = "numm")
 
-  design.frame     <- data.matrix[(numm >= numma) & (numm <= numme)]
+  design.frame     <- data_matrix[(numm >= numma) & (numm <= numme)]
   design.frame     <- xdesign.matrix[design.frame]
   setkey(design.frame, "imm")
 
@@ -151,6 +165,9 @@ BuildTC <- function(dataInput = NULL, otz = 1, astime, asdate, aedate, aetime, k
   fitting.coef <- lapply(split(fitting.coef, by = "imm", keep.by = FALSE), as.matrix)
 
   report                 <- list("lm.coeff"        = fitting.coef,
-                                 "diff.analyse"    = tdiff.analyse)
+                                 "tdiff.analyse"   = tdiff.analyse,
+                                 "km"              = km,
+                                 "otz"             = otz.24,
+                                 "tplus"           = tplus)
 
 }
