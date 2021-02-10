@@ -134,10 +134,11 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
     xdesign.matrix[i, 2: (matrix.cols + 1)] <- Funcs(xi = xdesign.matrix[i, 1], tdiff = tdiff.analyse)[[3]]
   }
 
-  xa                    <- numeric(length = 7)
-  ya                    <- numeric(length = 7)
-  ty                    <- numeric()
-  data.matrix           <- matrix(0.0, nrow = length.diffdays, ncol = 4)
+
+  xa                    <- numeric(length = 7) #time vector
+  ya                    <- numeric(length = 7) #height vector
+  ty                    <- numeric() #height interpolated by splint
+  data.matrix           <- matrix(0.0, nrow = length.diffdays, ncol = 4) #the result matrix
   colnames(data.matrix) <- c("numm", "imm", "tmmttmond", "height")
   numm                  <- NULL
   floored               <- floor((diff.days - tplus) / tm24)
@@ -147,6 +148,8 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
   tmd                   <- numeric()
   dx                    <- numeric()
   ld.3                  <- length.diffdays - 3
+
+
 
   for (ii in 4 : ld.3) {
     ik <- floored[ii]
@@ -284,7 +287,7 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
   report                 <- list("data.matrix"     = data.matrix[(numm >= numma) & (numm <= numme)],
                                  "synthesis.lunar" = time.height,
                                  "tide.curve"      = tidal.curve,
-                                 "lm.coeff"        = fitting.coeff,
+                                 "lm.coeff"        = fitting.coef,
                                  "diff.analyse"    = tdiff.analyse)
   # report$data.matrix     <- data.matrix[(numm >= numma) & (numm <= numme)]
   # report$synthesis.lunar <- time.height
