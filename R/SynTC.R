@@ -1,18 +1,35 @@
 #' Synthesizes a tide curve
 #'
-#' @description Synthesizes a tide curve; parameter built with BuildTC()
+#' @description Synthesizes a tide curve; model built with BuildTC().
+#' @param tmodel The model you built with BuildTC(). Please see examples.
+#' @param ssdate Synthesis start date. This indicates the date you want your tide curve to start with.
+#' @param sstime Synthesis start time. The starting time for your tide table.
+#' @param sedate Synthesis end date.
+#' @param setime Synthesis end time.
 #' @references \url {https://www.bsh.de/DE/PUBLIKATIONEN/_Anlagen/Downloads/Meer_und_Umwelt/Berichte-des-BSH/Berichte-des-BSH_50_de.pdf?__blob=publicationFile&v=13/}
 #' @references \url {https://doi.org/10.5194/os-15-1363-2019}
-#' @return
+#' @return Returns a list with two elements, which are of class data.table and data.frame.
+#' \item{synthesis.lunar}{The lunar synthesis data as a data.table object in UTC.}
+#' \item{tide.curve}{The solar tide curve as a data.table or NULL object (time zone of the observations).}
 #' @export
 #'
 #' @examples
+#' SynTC(ssdate = "2015/12/17", sstime = "00:00:00",
+#' sedate = "2015/12/31", setime = "23:30:00")
+#'
 SynTC <- function(tmodel = NULL, ssdate, sstime, sedate, setime, solar_syn = TRUE){
 
   stopifnot(class(tmodel == "tidecurve"))
 
+  #Retrieving objects from tmodel
 
-  #Synthesis
+  fitting.coef  <- tmodel[["fitting.coef"]]
+  tdiff.analyse <- tmodel[["tdiff.analyse"]]
+  km            <- tmodel[["km"]]
+  otz.24        <- tmodel[["otz.24"]]
+  tplus         <- tmodel[["tplus"]]
+
+  #Synthesis Period
   ssdate.time <- chron(dates. = ssdate,
                        times. = sstime,
                        format = c(dates = "y/m/d", times = "h:m:s"),
@@ -21,9 +38,11 @@ SynTC <- function(tmodel = NULL, ssdate, sstime, sedate, setime, solar_syn = TRU
                        times. = setime,
                        format = c(dates = "y/m/d", times = "h:m:s"),
                        out.format = c(dates = "y/m/d", times = "h:m:s")) - chron.origin - otz.24
-
+  #Transit indices
   nummsa  <- as.numeric(floor((ssdate.time - tplus) / tm24))
   nummse  <- as.numeric(floor((sedate.time - tplus) / tm24))
+
+  xdesign.matrix <- BuildDesign(tdiffa = tdiff.analyse, numma = nummsa, numme = nummse)
 
 
   m.length              <- (nummse - nummsa + 1) * km
