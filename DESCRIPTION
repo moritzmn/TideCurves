@@ -1,7 +1,7 @@
 Package: TideCurves
 Type: Package
 Title: Analysis and Prediction of Tides
-Version: 0.0.4
+Version: 0.0.5
 Author: Moritz Mueller-Navarra [aut, cre], Sylvin Mueller-Navarra [aut], Andreas Boesch [ctb]
 Maintainer: Moritz Mueller-Navarra <muellernavarra@gmail.com>
 Description: Tidal analysis of evenly spaced observed time series (time step 1 to 60 min) with or
@@ -16,4 +16,7 @@ Imports:
     data.table (>= 1.12.2),
     fields (>= 9.9)
 Depends: R (>= 3.6.0)
-RoxygenNote: 6.0.1
+RoxygenNote: 7.1.1
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
