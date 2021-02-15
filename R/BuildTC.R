@@ -9,16 +9,16 @@
 #' @param asdate A string indication the date you want the analysis to start with. Format: "yyyy/mm/dd".
 #' @param astime A string indicating the time you want the analysis to start with. Format: "hh:mm:ss"
 #' @param aedate A string indication the date you want the analysis to end with. Format: "yyyy/mm/dd".
-#' @param aetime A string indicating the time you want the analysis to end with. Format: "hh:mm:ss"
+#' @param aetime A string indicating the time you want the analysis to end with. Format: "hh:mm:ss".
 #' @references \url{https://www.bsh.de/DE/PUBLIKATIONEN/_Anlagen/Downloads/Meer_und_Umwelt/Berichte-des-BSH/Berichte-des-BSH_50_de.pdf?__blob=publicationFile&v=13/}
-#' @references \url {https://doi.org/10.5194/os-15-1363-2019}
-#' @return
+#' @references \url{https://doi.org/10.5194/os-15-1363-2019}
+#' @return A model of class tidecurve, which is a list vontai
 #' @export
 #'
 #' @examples
 #'
 #' BuildTC(dataInput = tideObservation, asdate = "2015/12/06",
-#'              astime = "00:00:00", aedate = "2015/12/31",
+#'              astime = "00:00:00", aedate = "2016/12/31",
 #'              aetime = "23:30:00")
 #'
 BuildTC <- function(dataInput = NULL, otz = 1, astime, asdate, aedate, aetime, km = -1, mindt = 30){
@@ -50,6 +50,10 @@ BuildTC <- function(dataInput = NULL, otz = 1, astime, asdate, aedate, aetime, k
   tdtobs.105   <- tdtobs + 10^-5
   otz.24       <- otz / 24
   tmondkm      <- numeric(length = km)
+
+  for (i in 1 : km) {
+    tmondkm[i] <- tmmh * (i - 0.5)
+  }
 
   #Reading the data
   height          <- dataInput[["height"]]
@@ -85,22 +89,8 @@ BuildTC <- function(dataInput = NULL, otz = 1, astime, asdate, aedate, aetime, k
 
   tdiff.analyse    <- numme - numma + 1
 
-  # nummsa  <- as.numeric(floor((ssdate.time - tplus) / tm24))
-  # nummse  <- as.numeric(floor((sedate.time - tplus) / tm24))
-  #
-  # #Computing Funcs for all cases
-  # min_numm <- min(c(numma, nummsa))
-  # max_numm <- max(c(numme, nummse))
-  # matrix.cols      <- length(Funcs(tdiff = tdiff.analyse, xi = max_numm)[[3]])
-  #
-  # xdesign.matrix      <- matrix(0.0, nrow = (max_numm - min_numm + 1), ncol = matrix.cols + 1)
-  # xdesign.matrix[, 1] <- seq.int(min_numm, max_numm, 1)
-  #
-  # for(i in 1 : nrow(xdesign.matrix)){
-  #   xdesign.matrix[i, 2: (matrix.cols + 1)] <- Funcs(xi = xdesign.matrix[i, 1], tdiff = tdiff.analyse)[[3]]
-  # }
-
   xdesign.matrix <- BuildDesign(tdiffa = tdiff.analyse, numma = numma, numme = numme)
+  matrix.cols    <- ncol(xdesign.matrix)
 
   xa                    <- numeric(length = 7)
   ya                    <- numeric(length = 7)
@@ -143,14 +133,14 @@ BuildTC <- function(dataInput = NULL, otz = 1, astime, asdate, aedate, aetime, k
   }
 
   #Prepare joins on numm for xdesign and design.frame
-  colnames(xdesign.matrix) <- c("numm", paste0("V","", seq(1 : matrix.cols)))
+  # colnames(xdesign.matrix) <- c("numm", paste0("V","", seq(1L : (matrix.cols - 1L))))
   xdesign.matrix           <- data.table(xdesign.matrix, key = "numm")
   data_matrix              <- data.table(data_matrix, key = "numm")
 
   design.frame     <- data_matrix[(numm >= numma) & (numm <= numme)]
   design.frame     <- xdesign.matrix[design.frame]
   setkey(design.frame, "imm")
-
+  #fit the model using lm.fit
   fitting.coef <- design.frame[,{
     m.h   <- mean(height)
     sd.h  <- 3 * sd(height)
@@ -160,14 +150,18 @@ BuildTC <- function(dataInput = NULL, otz = 1, astime, asdate, aedate, aetime, k
   }
   , by = "imm"]
 
-  for(j in seq_len(ncol(fitting.coef))) set(fitting.coef,which(is.na(fitting.coef[[j]])),j,0)
+  for(j in seq_len(ncol(fitting.coef))) set(fitting.coef, which(is.na(fitting.coef[[j]])), j, 0)
 
   fitting.coef <- lapply(split(fitting.coef, by = "imm", keep.by = FALSE), as.matrix)
 
-  report                 <- list("lm.coeff"        = fitting.coef,
+  tc_object                <- list("lm.coeff"      = fitting.coef,
                                  "tdiff.analyse"   = tdiff.analyse,
                                  "km"              = km,
-                                 "otz"             = otz.24,
-                                 "tplus"           = tplus)
+                                 "mindt"           = mindt,
+                                 "otz.24"          = otz.24,
+                                 "tplus"           = tplus,
+                                 "tm24"            = tm24)
+  class(tc_object) <- "tidecurve"
+  return(tc_object)
 
 }
