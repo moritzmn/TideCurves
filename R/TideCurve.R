@@ -38,7 +38,6 @@
 #' @import data.table
 #' @import chron
 #' @importFrom stats coef
-#' @importFrom stats coefficients
 #' @importFrom stats lm.fit
 #' @importFrom stats sd
 #' @importFrom fields splint
