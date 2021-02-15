@@ -138,8 +138,8 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
   xa                    <- numeric(length = 7) #time vector
   ya                    <- numeric(length = 7) #height vector
   ty                    <- numeric() #height interpolated by splint
-  data.matrix           <- matrix(0.0, nrow = length.diffdays, ncol = 4) #the result matrix
-  colnames(data.matrix) <- c("numm", "imm", "tmmttmond", "height")
+  data_matrix           <- matrix(0.0, nrow = length.diffdays, ncol = 4) #the result matrix
+  colnames(data_matrix) <- c("numm", "imm", "tmmttmond", "height")
   numm                  <- NULL
   floored               <- floor((diff.days - tplus) / tm24)
   tdtobs.2              <- tdtobs / 2
@@ -174,15 +174,15 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
 
     ty                 <- splint(xa, ya, tmmttmond)
 
-    data.matrix[ii, ]  <- c(ik, imm, tmmttmond, ty)
+    data_matrix[ii, ]  <- c(ik, imm, tmmttmond, ty)
   }
 
   #Prepare joins on numm for xdesign and design.frame
   colnames(xdesign.matrix) <- c("numm", paste0("V","", seq(1 : matrix.cols)))
   xdesign.matrix           <- data.table(xdesign.matrix, key = "numm")
-  data.matrix              <- data.table(data.matrix, key = "numm")
+  data_matrix              <- data.table(data_matrix, key = "numm")
 
-  design.frame     <- data.matrix[(numm >= numma) & (numm <= numme)]
+  design.frame     <- data_matrix[(numm >= numma) & (numm <= numme)]
   design.frame     <- xdesign.matrix[design.frame]
   setkey(design.frame, "imm")
 
@@ -284,7 +284,7 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
   tidal.curve <- tidal.curve[(prediction_date != "1900/01/01" & height != 0)]
 
   #we return a list containing the tide curve (lunar and solar), diff.analyse, lm.coeff and data matrix
-  report                 <- list("data.matrix"     = data.matrix[(numm >= numma) & (numm <= numme)],
+  report                 <- list("data_matrix"     = data_matrix[(numm >= numma) & (numm <= numme)],
                                  "synthesis.lunar" = time.height,
                                  "tide.curve"      = tidal.curve,
                                  "lm.coeff"        = fitting.coef,
