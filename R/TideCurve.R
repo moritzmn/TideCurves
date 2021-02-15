@@ -289,11 +289,6 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
                                  "tide.curve"      = tidal.curve,
                                  "lm.coeff"        = fitting.coef,
                                  "diff.analyse"    = tdiff.analyse)
-  # report$data.matrix     <- data.matrix[(numm >= numma) & (numm <= numme)]
-  # report$synthesis.lunar <- time.height
-  # report$tide.curve      <- tidal.curve
-  # report$lm.coeff        <- fitting.coef
-  # report$diff.analyse    <- tdiff.analyse
   return(report)
 }
 
