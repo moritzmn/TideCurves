@@ -6,28 +6,41 @@
 #' @param sstime Synthesis start time. The starting time for your tide table.
 #' @param sedate Synthesis end date.
 #' @param setime Synthesis end time.
-#' @references \url {https://www.bsh.de/DE/PUBLIKATIONEN/_Anlagen/Downloads/Meer_und_Umwelt/Berichte-des-BSH/Berichte-des-BSH_50_de.pdf?__blob=publicationFile&v=13/}
-#' @references \url {https://doi.org/10.5194/os-15-1363-2019}
+#' @param solar_syn Compute a solar synthesis? Default is TRUE.
+#' @references \url{https://www.bsh.de/DE/PUBLIKATIONEN/_Anlagen/Downloads/Meer_und_Umwelt/Berichte-des-BSH/Berichte-des-BSH_50_de.pdf?__blob=publicationFile&v=13/}
+#' @references \url{https://doi.org/10.5194/os-15-1363-2019}
 #' @return Returns a list with two elements, which are of class data.table and data.frame.
 #' \item{synthesis.lunar}{The lunar synthesis data as a data.table object in UTC.}
 #' \item{tide.curve}{The solar tide curve as a data.table or NULL object (time zone of the observations).}
 #' @export
 #'
 #' @examples
-#' SynTC(ssdate = "2015/12/17", sstime = "00:00:00",
-#' sedate = "2015/12/31", setime = "23:30:00")
+#' \dontrun{SynTC(tmodel = your_model, ssdate = "2015/12/17", sstime = "00:00:00",
+#' sedate = "2015/12/31", setime = "23:30:00")}
 #'
 SynTC <- function(tmodel = NULL, ssdate, sstime, sedate, setime, solar_syn = TRUE){
 
-  stopifnot(class(tmodel == "tidecurve"))
+  stopifnot(class(tmodel) == "tidecurve")
 
   #Retrieving objects from tmodel
 
-  fitting.coef  <- tmodel[["fitting.coef"]]
+  fitting.coef  <- tmodel[["lm.coeff"]]
   tdiff.analyse <- tmodel[["tdiff.analyse"]]
   km            <- tmodel[["km"]]
+  mindt         <- tmodel[["mindt"]]
   otz.24        <- tmodel[["otz.24"]]
   tplus         <- tmodel[["tplus"]]
+  tm24          <- tmodel[["tm24"]]
+
+  tmmh         <- tm24 / km
+  tdtobs       <- mindt / 1440
+  tdtobs.2     <- tdtobs / 2
+  tdtobs.105   <- tdtobs + 10^-5
+
+  chron.origin <- chron(dates. = "1900/01/01",
+                        times. = "00:00:00",
+                        format = c(dates = "y/m/d", times = "h:m:s"),
+                        out.format = c(dates = "y/m/d", times = "h:m:s"))
 
   #Synthesis Period
   ssdate.time <- chron(dates. = ssdate,
@@ -43,8 +56,8 @@ SynTC <- function(tmodel = NULL, ssdate, sstime, sedate, setime, solar_syn = TRU
   nummse  <- as.numeric(floor((sedate.time - tplus) / tm24))
 
   xdesign.matrix <- BuildDesign(tdiffa = tdiff.analyse, numma = nummsa, numme = nummse)
-
-
+  matrix.cols     <- ncol(xdesign.matrix) - 1L
+  xdesign.matrix        <- data.table(xdesign.matrix, key = "numm")
   m.length              <- (nummse - nummsa + 1) * km
   time1                 <- numeric(length = m.length)
   height                <- numeric(length = m.length)
@@ -56,6 +69,7 @@ SynTC <- function(tmodel = NULL, ssdate, sstime, sedate, setime, solar_syn = TRU
 
 
   #Lunar synthesis
+  numm <- NULL
   mm <- as.matrix(xdesign.matrix[numm >= nummsa][numm <= nummse])
   m  <- 0L
   n  <- 0L
@@ -80,14 +94,13 @@ SynTC <- function(tmodel = NULL, ssdate, sstime, sedate, setime, solar_syn = TRU
   date_time       <- NULL
 
   time.height <- data.table(time.height)
-  time.height[,date_time := format(chron(dates. = (round(time1 * 86400, digits = 0) / 86400) + 1 / 864000),
-                                   "%Y/%m/%d %H:%M:%S")]
+  time.height[,date_time := format(chron(dates. = (round(time1 * 86400, digits = 0) / 86400) + 1 / 864000,
+                                         origin. = c(month = 1, day = 1, year = 1900)),
+                                   format = "%Y/%m/%d %H:%M:%S")]
   setcolorder(time.height, c("date_time", "time1", "height", "i", "k"))
   time.height[, c("prediction_date", "prediction_time") := tstrsplit(date_time, split = " ")]
 
   if(isTRUE(solar_syn)) {
-
-
 
   #Solar synthesis
   l           <- 1L
@@ -125,7 +138,9 @@ SynTC <- function(tmodel = NULL, ssdate, sstime, sedate, setime, solar_syn = TRU
     l           <- l + 1L
   }
 
-  tidal.curve     <- data.table(date_time = format(chron(dates. = (tsyntstd + 1 / 864000)), "%Y/%m/%d %H:%M:00"),
+  tidal.curve     <- data.table(date_time = format(chron(dates. = (tsyntstd + 1 / 864000),
+                                                         origin. = c(month = 1, day = 1, year = 1900)),
+                                                   format = "%Y/%m/%d %H:%M:00"),
                                 time1  = as.numeric(tsyntstd) + 1 / 864000,
                                 height = ty)
   tidal.curve[, c("prediction_date", "prediction_time") := tstrsplit(date_time, split = " ")]
@@ -136,7 +151,7 @@ SynTC <- function(tmodel = NULL, ssdate, sstime, sedate, setime, solar_syn = TRU
   }
 
   syn <- list("synthesis.lunar" = time.height,
-              "tidal.curve"     = tidal.curve)
+              "tide.curve"     = tidal.curve)
 
   return(syn)
 
