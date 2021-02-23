@@ -6,6 +6,7 @@
 #' @param numme The transit number (end).
 #'
 #' @return Returns a matrix
+#'
 BuildDesign <- function(tdiffa, numma, numme) {
   matrix.cols      <- length(Funcs(tdiff = tdiffa, xi = 1)[[3]])
 
