@@ -71,7 +71,7 @@ should start one lunar day after the first observation and end one lunar day bef
 \references{
 Godin, Gabriel (1972) The Analysis of Tides. Toronto, 264pp
 
-\url{https://doi.org/10.5194/os-15-1363-2019/}
+\doi{10.5194/os-15-1363-2019}
 
 \url{https://www.bsh.de/DE/PUBLIKATIONEN/_Anlagen/Downloads/Meer_und_Umwelt/Berichte-des-BSH/Berichte-des-BSH_50_de.pdf?__blob=publicationFile&v=13}
 }

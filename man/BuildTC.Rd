@@ -34,7 +34,7 @@ Example: Time step 5 min: Use km = 288 or even smaller. Leave on default (km = -
 \item{mindt}{Observation time step in [min]. Default is 30.}
 }
 \value{
-A model of class tidecurve, which is a list vontai
+A model of class tidecurve, which is a list.
 }
 \description{
 Builds a TideCurve model of class "tidecurve".
@@ -49,5 +49,5 @@ Builds a TideCurve model of class "tidecurve".
 \references{
 \url{https://www.bsh.de/DE/PUBLIKATIONEN/_Anlagen/Downloads/Meer_und_Umwelt/Berichte-des-BSH/Berichte-des-BSH_50_de.pdf?__blob=publicationFile&v=13/}
 
-\url{https://doi.org/10.5194/os-15-1363-2019}
+\doi{10.5194/os-15-1363-2019}
 }

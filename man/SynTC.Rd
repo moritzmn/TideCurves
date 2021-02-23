@@ -35,5 +35,5 @@ sedate = "2015/12/31", setime = "23:30:00")}
 \references{
 \url{https://www.bsh.de/DE/PUBLIKATIONEN/_Anlagen/Downloads/Meer_und_Umwelt/Berichte-des-BSH/Berichte-des-BSH_50_de.pdf?__blob=publicationFile&v=13/}
 
-\url{https://doi.org/10.5194/os-15-1363-2019}
+\doi{10.5194/os-15-1363-2019}
 }

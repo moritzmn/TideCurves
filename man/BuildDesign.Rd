@@ -17,5 +17,5 @@ BuildDesign(tdiffa, numma, numme)
 Returns a matrix
 }
 \description{
-Builds the xdesing.matrix by calling Funcs. For internal use.
+Builds the xdesign.matrix by calling Funcs. For internal use.
 }
