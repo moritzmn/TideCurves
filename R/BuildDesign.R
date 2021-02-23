@@ -1,5 +1,5 @@
 #' Builds the design matrix
-#' @description Builds the xdesing.matrix by calling Funcs. For internal use.
+#' @description Builds the xdesign.matrix by calling Funcs. For internal use.
 #'
 #' @param tdiffa The difference in days as double which stems from the analysis period.
 #' @param numma The transit number (start).
