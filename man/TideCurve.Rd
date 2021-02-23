@@ -61,19 +61,17 @@ Therefore the analysis time period
 should start one lunar day after the first observation and end one lunar day before the last observation.
 }
 \examples{
-TideCurve(dataInput = tideObservation, asdate = "2015/12/06",
+\dontrun{TideCurve(dataInput = tideObservation, asdate = "2015/12/06",
              astime = "00:00:00",      aedate = "2015/12/31",
              aetime = "23:30:00",      ssdate = "2015/12/17",
              sstime = "00:00:00",      sedate = "2015/12/31",
-             setime = "23:30:00")
+             setime = "23:30:00")}
 
 }
 \references{
 Godin, Gabriel (1972) The Analysis of Tides. Toronto, 264pp
 
-\url{https://www.ocean-sci.net/15/1363/2019/}
-
-\url{http://tidesandcurrents.noaa.gov/publications/glossary2.pdf}
+\url{https://doi.org/10.5194/os-15-1363-2019/}
 
 \url{https://www.bsh.de/DE/PUBLIKATIONEN/_Anlagen/Downloads/Meer_und_Umwelt/Berichte-des-BSH/Berichte-des-BSH_50_de.pdf?__blob=publicationFile&v=13}
 }
