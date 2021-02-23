@@ -25,15 +25,14 @@
 #' \item{lm.coeff}{Coefficients for the km fitted linear models used in the synthesis as a list of 1-row matrices}
 #' \item{diff.analyse}{Time in days spanning the analysis}
 #' @references  Godin, Gabriel (1972) The Analysis of Tides. Toronto, 264pp
-#' @references \url{https://www.ocean-sci.net/15/1363/2019/}
-#' @references \url{http://tidesandcurrents.noaa.gov/publications/glossary2.pdf}
+#' @references \url{https://doi.org/10.5194/os-15-1363-2019/}
 #' @references \url{https://www.bsh.de/DE/PUBLIKATIONEN/_Anlagen/Downloads/Meer_und_Umwelt/Berichte-des-BSH/Berichte-des-BSH_50_de.pdf?__blob=publicationFile&v=13}
 #' @examples
-#' TideCurve(dataInput = tideObservation, asdate = "2015/12/06",
+#' \dontrun{TideCurve(dataInput = tideObservation, asdate = "2015/12/06",
 #'              astime = "00:00:00",      aedate = "2015/12/31",
 #'              aetime = "23:30:00",      ssdate = "2015/12/17",
 #'              sstime = "00:00:00",      sedate = "2015/12/31",
-#'              setime = "23:30:00")
+#'              setime = "23:30:00")}
 #'
 #' @import data.table
 #' @import chron
@@ -51,7 +50,7 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
 
   height  <- dataInput[["height"]]
   nspline <- 7
-  options(chron.origin = c(month = 1, day = 1, year = 1900))
+  #options(chron.origin = c(month = 1, day = 1, year = 1900))
   chron.origin <- chron(dates. = "1900/01/01",
                         times. = "00:00:00",
                         format = c(dates = "y/m/d", times = "h:m:s"),
@@ -233,7 +232,8 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
   date_time       <- NULL
 
   time.height <- data.table(time.height)
-  time.height[,date_time := format(chron(dates. = (round(time1 * 86400, digits = 0) / 86400) + 1 / 864000),
+  time.height[, date_time := format(chron(dates. = (round(time1 * 86400, digits = 0) / 86400) + 1 / 864000,
+                                          origin. = c(month = 1, day = 1, year = 1900)),
                                    "%Y/%m/%d %H:%M:%S")]
   setcolorder(time.height, c("date_time", "time1", "height", "i", "k"))
   time.height[, c("prediction_date", "prediction_time") := tstrsplit(date_time, split = " ")]
@@ -276,7 +276,9 @@ TideCurve <- function(dataInput, otz = 1, km = -1, mindt = 30, asdate, astime, a
 
   #Add date/time columns to solar synthesis
 
-  tidal.curve     <- data.table(date_time = format(chron(dates. = (tsyntstd + 1 / 864000)), "%Y/%m/%d %H:%M:00"),
+  tidal.curve     <- data.table(date_time = format(chron(dates. = (tsyntstd + 1 / 864000),
+                                                         origin. = c(month = 1, day = 1, year = 1900)),
+                                                   "%Y/%m/%d %H:%M:00"),
                                 time1  = as.numeric(tsyntstd) + 1 / 864000,
                                 height = ty)
   tidal.curve[, c("prediction_date", "prediction_time") := tstrsplit(date_time, split = " ")]
