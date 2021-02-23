@@ -41,9 +41,9 @@ Builds a TideCurve model of class "tidecurve".
 }
 \examples{
 
-BuildTC(dataInput = tideObservation, asdate = "2015/12/06",
+\dontrun{BuildTC(dataInput = tideObservation, asdate = "2015/12/06",
              astime = "00:00:00", aedate = "2016/12/31",
-             aetime = "23:30:00")
+             aetime = "23:30:00")}
 
 }
 \references{
