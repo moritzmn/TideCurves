@@ -1,7 +1,7 @@
 ---
 output:
   md_document:
-    variant: markdown_github
+    variant: gfm
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 # TideCurves
 
 This packages provides functions for synthesizing tide curves. Ideally you collected data for 19 years for a fixed location.
-Though shorter periods are possible and will produce good results.
+Shorter periods are also possible and will produce good results.
 
 The functions are based on the Harmonic Representation of Inequalities (HRoI) and not on the harmonic method. Please consult the following links for a detailed description of HRoI:
 
@@ -40,7 +40,7 @@ sapply(tideObservation, typeof)
 
 ```
 
-AS of version 0.0.5 you have the option to build a model of class "tidecurve" and then synthesize different periods using this model. The "TideCurve" functions on the other hand builds and synthesizes on one go. The different options are explained below.
+AS of version 0.0.5 you have the option to build a model of class "tidecurve" and then synthesize different periods using this model. The "TideCurve" functions on the other hand builds and synthesizes in one go. The different options are explained below.
 
 ### TideCurve
 
@@ -85,8 +85,9 @@ sedate = "2015/12/31", setime = "23:30:00")
 str(tc)
 ```
 
-```{r}
-tc[["data_matrix"]] <- tc_model[["data_matrix"]]
+Calling ResCurve on tc is currently not possible. This is on the agenda for the next release.
 
+```{r eval=FALSE, include=TRUE}
+#Not possible
 imydifferences <- ResCurve(tcData = tc, obsData = tideObservation)
 ```
