@@ -37,7 +37,7 @@ ResCurve<- function(tcData, obsData){
 
   #Lunar residuum
   syl <- copy(tcData$synthesis.lunar)
-  dam <- copy(tcData$data.matrix)
+  dam <- copy(tcData$data_matrix)
   syl[, numm_imm := paste(i, k, sep="_")]
   dam[, numm_imm := paste(numm, imm, sep="_")]
   setnames(syl, "height", "lsheight")
