@@ -151,7 +151,7 @@ SynTC <- function(tmodel = NULL, ssdate, sstime, sedate, setime, solar_syn = TRU
   }
 
   syn <- list("synthesis.lunar" = time.height,
-              "tide.curve"     = tidal.curve)
+              "tide.curve"      = tidal.curve)
 
   return(syn)
 
