@@ -25,7 +25,7 @@
 #' \item{lm.coeff}{Coefficients for the km fitted linear models used in the synthesis as a list of 1-row matrices}
 #' \item{diff.analyse}{Time in days spanning the analysis}
 #' @references  Godin, Gabriel (1972) The Analysis of Tides. Toronto, 264pp
-#' @references \url{https://doi.org/10.5194/os-15-1363-2019/}
+#' @references \doi{10.5194/os-15-1363-2019}
 #' @references \url{https://www.bsh.de/DE/PUBLIKATIONEN/_Anlagen/Downloads/Meer_und_Umwelt/Berichte-des-BSH/Berichte-des-BSH_50_de.pdf?__blob=publicationFile&v=13}
 #' @examples
 #' \dontrun{TideCurve(dataInput = tideObservation, asdate = "2015/12/06",

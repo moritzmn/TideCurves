@@ -11,7 +11,7 @@
 #' @param aedate A string indication the date you want the analysis to end with. Format: "yyyy/mm/dd".
 #' @param aetime A string indicating the time you want the analysis to end with. Format: "hh:mm:ss".
 #' @references \url{https://www.bsh.de/DE/PUBLIKATIONEN/_Anlagen/Downloads/Meer_und_Umwelt/Berichte-des-BSH/Berichte-des-BSH_50_de.pdf?__blob=publicationFile&v=13/}
-#' @references \url{https://doi.org/10.5194/os-15-1363-2019}
+#' @references \doi{10.5194/os-15-1363-2019}
 #' @return A model of class tidecurve, which is a list.
 #' @export
 #'
