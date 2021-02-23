@@ -12,14 +12,14 @@
 #' @param aetime A string indicating the time you want the analysis to end with. Format: "hh:mm:ss".
 #' @references \url{https://www.bsh.de/DE/PUBLIKATIONEN/_Anlagen/Downloads/Meer_und_Umwelt/Berichte-des-BSH/Berichte-des-BSH_50_de.pdf?__blob=publicationFile&v=13/}
 #' @references \url{https://doi.org/10.5194/os-15-1363-2019}
-#' @return A model of class tidecurve, which is a list vontai
+#' @return A model of class tidecurve, which is a list.
 #' @export
 #'
 #' @examples
 #'
-#' BuildTC(dataInput = tideObservation, asdate = "2015/12/06",
+#' \dontrun{BuildTC(dataInput = tideObservation, asdate = "2015/12/06",
 #'              astime = "00:00:00", aedate = "2016/12/31",
-#'              aetime = "23:30:00")
+#'              aetime = "23:30:00")}
 #'
 BuildTC <- function(dataInput = NULL, otz = 1, astime, asdate, aedate, aetime, km = -1, mindt = 30){
 
