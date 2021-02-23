@@ -2,7 +2,10 @@ Package: TideCurves
 Type: Package
 Title: Analysis and Prediction of Tides
 Version: 0.0.5
-Author: Moritz Mueller-Navarra [aut, cre], Sylvin Mueller-Navarra [aut], Andreas Boesch [ctb]
+Authors@R: c(
+    person("Moritz","Mueller-Navarra", email="muellernavarra@gmail.com",role=c("aut","cre")),
+    person("Sylvin","Mueller-Navarra", email="4@sylvin.de",role="aut", comment = "(2019) <https://doi.org/10.5194/os-15-1363-2019>"),
+    person("Andreas", "Boesch", role="ctb", comment = "(2019) <https://doi.org/10.5194/os-15-1363-2019>"))
 Maintainer: Moritz Mueller-Navarra <muellernavarra@gmail.com>
 Description: Tidal analysis of evenly spaced observed time series (time step 1 to 60 min) with or
     without shorter gaps using the harmonic representation of inequalities.
