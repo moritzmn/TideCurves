@@ -13,9 +13,11 @@ tc_m <- SynTC(tmodel = tc_model,  ssdate = "2015/01/01", sstime = "00:00:00" ,
               sedate = "2015/12/31", setime = "23:30:00")
 
 test_that("equal lunar synthesis", {
+  local_edition(2)
   expect_equal(tc$synthesis.lunar, tc_m$synthesis.lunar)
 })
 
 test_that("equal solar synthesis", {
+  local_edition(2)
   expect_equal(tc$tide.curve, tc_m$tide.curve)
 })
