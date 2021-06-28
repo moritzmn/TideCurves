@@ -8,7 +8,7 @@
 #' @param setime Synthesis end time.
 #' @param solar_syn Compute a solar synthesis? Default is TRUE.
 #' @references \url{https://www.bsh.de/DE/PUBLIKATIONEN/_Anlagen/Downloads/Meer_und_Umwelt/Berichte-des-BSH/Berichte-des-BSH_50_de.pdf?__blob=publicationFile&v=13/}
-#' @references \doi{10.5194/os-15-1363-2019}
+#' @references \doi{https://doi.org/10.5194/os-15-1363-2019}
 #' @return Returns a list with two elements, which are of class data.table and data.frame.
 #' \item{synthesis.lunar}{The lunar synthesis data as a data.table object in UTC.}
 #' \item{tide.curve}{The solar tide curve as a data.table or NULL object (time zone of the observations).}
