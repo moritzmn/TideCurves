@@ -15,11 +15,11 @@ Description: Tidal analysis of evenly spaced observed time series (time step 1 t
 License: GPL-3
 LazyData: TRUE
 Imports:
-    chron (>= 2.3-54),
-    data.table (>= 1.12.2),
-    fields (>= 9.9)
-Depends: R (>= 3.6.0)
+    chron (>= 2.3-56),
+    data.table (>= 1.14.0),
+    fields (>= 11.6)
+Depends: R (>= 4.0.5)
 RoxygenNote: 7.1.1
 Suggests: 
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.1)
 Config/testthat/edition: 3
