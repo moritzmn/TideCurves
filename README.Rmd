@@ -25,13 +25,14 @@ The functions are based on the Harmonic Representation of Inequalities (HRoI) an
 
 - https://doi.org/10.5194/os-15-1363-2019
 
-## Why should i use this package?
+## Why should I use this package?
 
 You should use this package for producing tide curves from past data.
 
-## How do i use it?
+## How do I use it?
 
-Import your data set first and transform it to a readable form. See attached data 'observation' for an example data frame.
+Import your data set first and transform it to a readable form. See attached data `tideObservation` for an example data frame.
+
 ```{r}
 library(TideCurves)
 tideObservation[1:10, ]
@@ -40,11 +41,11 @@ sapply(tideObservation, typeof)
 
 ```
 
-AS of version 0.0.5 you have the option to build a model of class "tidecurve" and then synthesize different periods using this model. The "TideCurve" functions on the other hand builds and synthesizes in one go. The different options are explained below.
+As of version 0.0.5 you have the option to build a model of class `tidecurve` and then synthesize different periods using this model. The `TideCurve` functions on the other hand builds and synthesizes in one go. The different options are explained below.
 
 ### TideCurve
 
-You can now use your data as input for the function 'TideCurve'. Setting the periods for analyzing and synthesizing and wait for the table to be produced. Afterwards you can compute the differences between the observed data and lunar and solar tide curves 
+You can use your data as input for the function `TideCurve`. Setting the periods for analyzing and synthesizing and wait for the table to be produced. Afterwards you can compute the differences between the observed data and lunar and solar tide curves. 
 
 ```{r}
 mytidecurve <- TideCurve(dataInput = tideObservation, asdate = "2015/12/06",
@@ -53,21 +54,23 @@ mytidecurve <- TideCurve(dataInput = tideObservation, asdate = "2015/12/06",
              sstime = "00:00:00",      sedate = "2015/12/31",
              setime = "23:30:00")
 
+str(mytidecurve)
+
 mydifferences <- ResCurve(tcData = mytidecurve, obsData = tideObservation)
 
 ```
 
 ```{r}
-mydifferences
+head(mydifferences)
 ```
 
 ### BuildTC & SynTC
 
-Model building and synthesis are now decoupled. You need to build a model with "BuildTC", setting the analysis period and afterwards you call SynTC for a defined synthesis period.
+Model building and synthesis are now decoupled. You need to build a model with `BuildTC`, setting the analysis period and afterwards you call `SynTC` for a defined synthesis period.
 
 ```{r}
 tc_model <- BuildTC(dataInput = tideObservation, asdate = "2015/12/06",
-             astime = "00:00:00", aedate = "2016/12/31",
+             astime = "00:00:00", aedate = "2015/12/31",
              aetime = "23:30:00")
 ```
 
@@ -85,9 +88,23 @@ sedate = "2015/12/31", setime = "23:30:00")
 str(tc)
 ```
 
-Calling ResCurve on tc is currently not possible. This is on the agenda for the next release.
+Calling ResCurve using the `BuildTC` followed by `SynTC` is also possible:
 
-```{r eval=FALSE, include=TRUE}
-#Not possible
-imydifferences <- ResCurve(tcData = tc, obsData = tideObservation)
+```{r eval=TRUE, include=TRUE}
+
+tc_model <- BuildTC(dataInput = tideObservation, asdate = "2015/12/06",
+             astime = "00:00:00", aedate = "2015/12/31",
+             aetime = "23:30:00", keep_data = TRUE)
+
+syn_tc   <- SynTC(tmodel = tc_model,  ssdate = "2015/12/17", sstime = "00:00:00" ,
+              sedate = "2015/12/31", setime = "23:30:00")
+
+syn_tc$data_matrix <- tc_model$data_matrix
+
+res_tc_n <- ResCurve(syn_tc, tideObservation)
 ```
+
+```{r}
+res_tc_n
+```
+
