@@ -12,7 +12,8 @@ BuildTC(
   aedate,
   aetime,
   km = -1,
-  mindt = 30
+  mindt = 30,
+  keep_data = FALSE
 )
 }
 \arguments{
@@ -32,6 +33,8 @@ BuildTC(
 Example: Time step 5 min: Use km = 288 or even smaller. Leave on default (km = -1) and supply mindt, when unsure.}
 
 \item{mindt}{Observation time step in [min]. Default is 30.}
+
+\item{keep_data}{Indicating whether you want to keep the data for computing residuals later. Default is FALSE which keeps the model footprint small.}
 }
 \value{
 A model of class tidecurve, which is a list.
@@ -42,7 +45,7 @@ Builds a TideCurve model of class "tidecurve".
 \examples{
 
 \dontrun{BuildTC(dataInput = tideObservation, asdate = "2015/12/06",
-             astime = "00:00:00", aedate = "2016/12/31",
+             astime = "00:00:00", aedate = "2015/12/31",
              aetime = "23:30:00")}
 
 }
