@@ -10,18 +10,19 @@
 #' @param astime A string indicating the time you want the analysis to start with. Format: "hh:mm:ss"
 #' @param aedate A string indication the date you want the analysis to end with. Format: "yyyy/mm/dd".
 #' @param aetime A string indicating the time you want the analysis to end with. Format: "hh:mm:ss".
+#' @param keep_data Indicating whether you want to keep the data for computing residuals later. Default is FALSE which keeps the model footprint small.
 #' @references \url{https://www.bsh.de/DE/PUBLIKATIONEN/_Anlagen/Downloads/Meer_und_Umwelt/Berichte-des-BSH/Berichte-des-BSH_50_de.pdf?__blob=publicationFile&v=13/}
-#' @references \doi{10.5194/os-15-1363-2019}
+#' @references \doi{https://doi.org/10.5194/os-15-1363-2019}
 #' @return A model of class tidecurve, which is a list.
 #' @export
 #'
 #' @examples
 #'
 #' \dontrun{BuildTC(dataInput = tideObservation, asdate = "2015/12/06",
-#'              astime = "00:00:00", aedate = "2016/12/31",
+#'              astime = "00:00:00", aedate = "2015/12/31",
 #'              aetime = "23:30:00")}
 #'
-BuildTC <- function(dataInput = NULL, otz = 1, astime, asdate, aedate, aetime, km = -1, mindt = 30){
+BuildTC <- function(dataInput = NULL, otz = 1, astime, asdate, aedate, aetime, km = -1, mindt = 30, keep_data = FALSE){
 
   #constants
   nspline <- 7
@@ -154,13 +155,16 @@ BuildTC <- function(dataInput = NULL, otz = 1, astime, asdate, aedate, aetime, k
 
   fitting.coef <- lapply(split(fitting.coef, by = "imm", keep.by = FALSE), as.matrix)
 
+  if(!keep_data) data_matrix <- NULL
   tc_object                <- list("lm.coeff"      = fitting.coef,
                                  "tdiff.analyse"   = tdiff.analyse,
                                  "km"              = km,
                                  "mindt"           = mindt,
                                  "otz.24"          = otz.24,
                                  "tplus"           = tplus,
-                                 "tm24"            = tm24)
+                                 "tm24"            = tm24,
+                                 "data_matrix"     = data_matrix)
+
   class(tc_object) <- "tidecurve"
   return(tc_object)
 
